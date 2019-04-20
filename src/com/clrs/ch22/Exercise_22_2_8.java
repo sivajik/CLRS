@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class BFSImplementation {
+public class Exercise_22_2_8 {
 
 	public static void main(String[] args) {
 		BFSGraph g = new BFSGraph(6);
@@ -65,6 +65,8 @@ public class BFSImplementation {
 			Queue<Vertex> q = new LinkedList<Vertex>();
 			q.add(s);
 
+			int diameter = Integer.MIN_VALUE;
+			
 			while (!q.isEmpty()) {
 				Vertex u = q.remove();
 				System.out.println(u.printVertex());
@@ -76,10 +78,16 @@ public class BFSImplementation {
 						v.distance = u.distance + 1;
 						v.color = VertexColor.GRAY;
 						q.add(v);
+						
+						if (v.distance > diameter) {
+							diameter = v.distance;
+						}
 					}
 				}
 				u.color = VertexColor.BLACK;
 			}
+			
+			System.out.println("\n\nDiameter Of the tree is: " + diameter + "\n\n");
 		}
 
 		public void printPath(int s, int v) {
