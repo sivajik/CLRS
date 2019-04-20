@@ -13,15 +13,16 @@ public class Exercise_21_2_1 {
 
 		DisSet21_2_1 d1 = dImpl.union(1, 3);
 		d1.print();
-		d1 = dImpl.union(3, 5);
+		d1 = dImpl.union(1, 5);
 		d1.print();
-		d1 = dImpl.union(5, 7);
+		d1 = dImpl.union(7, 5);
 		d1.print();
 		d1 = dImpl.union(7, 9);
 		d1.print();
 		d1 = dImpl.union(2, 4);
 		d1.print();
-
+		d1 = dImpl.union(4, 6);
+		d1.print();
 	}
 }
 
@@ -85,7 +86,7 @@ class DisSet21_2_1_Impl {
 			z.parentDisSet = s1;
 			z = z.next;
 		}
-
+		z.parentDisSet = s1;
 		s1.tail = s2.tail;
 		map.put(data1, s1);
 		map.put(data2, s1);
