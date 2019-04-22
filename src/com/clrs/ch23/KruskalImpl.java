@@ -30,113 +30,114 @@ public class KruskalImpl {
 		GraphK graph = new GraphK();
 		graph.kruskalMST(graphEdges, nodeCount);
 	}
-}
+	
+	static class GraphK {
 
-class GraphK {
+		public void kruskalMST(ArrayList<Edge> graphEdges, int nodeCount) {
+			Collections.sort(graphEdges);
 
-	public void kruskalMST(ArrayList<Edge> graphEdges, int nodeCount) {
-		Collections.sort(graphEdges);
+			List<Edge> mstEdges = new ArrayList<Edge>();
 
-		List<Edge> mstEdges = new ArrayList<Edge>();
+			DisjointSet ds = new DisjointSet();
+			for (int i = 1; i <= nodeCount; i++) {
+				ds.makeSet(i);
+			}
 
-		DisjointSet ds = new DisjointSet();
-		for (int i = 1; i <= nodeCount; i++) {
-			ds.makeSet(i);
+			for (int i = 0; i < graphEdges.size() && mstEdges.size() < nodeCount - 1; i++) {
+				Edge currentEdge = graphEdges.get(i);
+				Node node1 = ds.find(currentEdge.u);
+				Node node2 = ds.find(currentEdge.v);
+
+				if (node1 == node2) {
+
+				} else {
+					mstEdges.add(currentEdge);
+					ds.union(currentEdge.u, currentEdge.v);
+				}
+			}
+
+			long totalWegith = 0;
+			for (Edge e : mstEdges) {
+				totalWegith += e.weight;
+				System.out.println(e);
+			}
+			System.out.println("=====");
+			System.out.println("Weight: " + totalWegith);
+			System.out.println("=====");
+		}
+	}
+
+	static class Edge implements Comparable<Edge> {
+		int u;
+		int v;
+		int weight;
+
+		Edge(int u, int v, int weight) {
+			this.u = u;
+			this.v = v;
+			this.weight = weight;
 		}
 
-		for (int i = 0; i < graphEdges.size() && mstEdges.size() < nodeCount - 1; i++) {
-			Edge currentEdge = graphEdges.get(i);
-			Node node1 = ds.find(currentEdge.u);
-			Node node2 = ds.find(currentEdge.v);
+		@Override
+		public int compareTo(Edge o) {
+			return this.weight - o.weight;
+		}
 
-			if (node1 == node2) {
+		public String toString() {
+			return ("Edge: " + u + " -> " + v + "[" + weight + "]");
+		}
+	}
 
+	static class Node {
+		long data;
+		Node parent;
+		int rank;
+	}
+
+	static class DisjointSet {
+		private Map<Long, Node> map = new HashMap<Long, Node>();
+
+		public void makeSet(long data) {
+			Node node = new Node();
+			node.data = data;
+			node.parent = node;
+			node.rank = 0;
+			map.put(data, node);
+		}
+
+		public Node find(long data) {
+			return find(map.get(data));
+		}
+
+		public Node find(Node node) {
+			Node parent = node.parent;
+			if (parent == node) {
+				return node;
 			} else {
-				mstEdges.add(currentEdge);
-				ds.union(currentEdge.u, currentEdge.v);
+				return find(node.parent);
 			}
 		}
 
-		long totalWegith = 0;
-		for (Edge e : mstEdges) {
-			totalWegith += e.weight;
-			System.out.println(e);
+		public boolean union(long data1, long data2) {
+			Node node1 = map.get(data1);
+			Node node2 = map.get(data2);
+
+			Node parent1 = find(node1);
+			Node parent2 = find(node2);
+
+			if (parent1.data == parent2.data) { // same set
+				return false;
+			}
+
+			if (parent1.rank >= parent2.rank) { // does not matter non-root's rank
+				parent1.rank = parent1.rank == parent2.rank ? parent1.rank + 1 : parent1.rank;
+				parent2.parent = parent1;
+			} else {
+				parent1.parent = parent2;
+			}
+			return true;
+
 		}
-		System.out.println("=====");
-		System.out.println("Weight: " + totalWegith);
-		System.out.println("=====");
 	}
 }
 
-class Edge implements Comparable<Edge> {
-	int u;
-	int v;
-	int weight;
-
-	Edge(int u, int v, int weight) {
-		this.u = u;
-		this.v = v;
-		this.weight = weight;
-	}
-
-	@Override
-	public int compareTo(Edge o) {
-		return this.weight - o.weight;
-	}
-
-	public String toString() {
-		return ("Edge: " + u + " -> " + v + "[" + weight + "]");
-	}
-}
-
-class Node {
-	long data;
-	Node parent;
-	int rank;
-}
-
-class DisjointSet {
-	private Map<Long, Node> map = new HashMap<Long, Node>();
-
-	public void makeSet(long data) {
-		Node node = new Node();
-		node.data = data;
-		node.parent = node;
-		node.rank = 0;
-		map.put(data, node);
-	}
-
-	public Node find(long data) {
-		return find(map.get(data));
-	}
-
-	public Node find(Node node) {
-		Node parent = node.parent;
-		if (parent == node) {
-			return node;
-		} else {
-			return find(node.parent);
-		}
-	}
-
-	public boolean union(long data1, long data2) {
-		Node node1 = map.get(data1);
-		Node node2 = map.get(data2);
-
-		Node parent1 = find(node1);
-		Node parent2 = find(node2);
-
-		if (parent1.data == parent2.data) { // same set
-			return false;
-		}
-
-		if (parent1.rank >= parent2.rank) { // does not matter non-root's rank
-			parent1.rank = parent1.rank == parent2.rank ? parent1.rank + 1 : parent1.rank;
-			parent2.parent = parent1;
-		} else {
-			parent1.parent = parent2;
-		}
-		return true;
-
-	}
-}
